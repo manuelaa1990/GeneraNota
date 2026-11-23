@@ -53,18 +53,7 @@
     
     /* Encabezado */
     .doc-header { display: flex; flex-direction: column; border-bottom: 2px solid var(--primary); padding-bottom: 14px; margin-bottom: 18px; position: relative; }
-    
-    /* Caja de la derecha para fecha y número */
-    .doc-top-right { 
-      position: absolute; 
-      top: 0; 
-      right: 0; 
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    
+    .doc-top-right { position: absolute; top: 0; right: 0; text-align: right; display: flex; flex-direction: column; gap: 3px; }
     .doc-date { font-size: 13px; color: #4b5563; font-weight: 600; }
     .doc-num-right { font-size: 15px; font-weight: 800; color: #111827; }
     
@@ -161,7 +150,7 @@
       </div>
       <div class="field">
         <label>RIF / CÉDULA</label>
-        <input type="text" id="inClientId" value="13.115.067" oninput="render()" />
+        <input type="text" id="inClientId" value="V-13115067" oninput="render()" />
       </div>
     </div>
 
@@ -194,7 +183,7 @@
         </div>
         <div class="field">
           <label>Cédula Titular</label>
-          <input type="text" id="inBankId" value="19.880.792" oninput="render()" />
+          <input type="text" id="inBankId" value="V-19880792" oninput="render()" />
         </div>
       </div>
     </div>
@@ -279,7 +268,7 @@
             <div class="payment-col">
               <h4>DATOS PARA TRANSFERENCIA BANCARIA (BANCO PROVINCIAL)</h4>
               <p><strong>Titular:</strong> <span id="outBankHolder">Manuel Arias</span></p>
-              <p><strong>Cédula / RIF:</strong> <span id="outBankId">19.880.792</span></p>
+              <p><strong>Cédula / RIF:</strong> <span id="outBankId">V-19.880.792</span></p>
               <p><strong>Tipo de Cuenta:</strong> Cuenta Corriente</p>
               <p><strong>Número de Cuenta:</strong> <span id="outBankAccount">01080137180100065512</span></p>
             </div>
@@ -301,6 +290,23 @@
 
   function formatNumber(num) {
     return Number(num || 0).toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // NUEVA FUNCIÓN: Formatea cédulas y RIF (mantiene la letra y coloca puntos a los números)
+  function formatCedulaRif(val) {
+    if (!val) return "";
+    // Extraer solo letras iniciales (si las hay) y los números
+    let letras = val.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    let numeros = val.replace(/[^0-9]/g, '');
+    
+    // Si no hay números, devolver tal cual
+    if (!numeros) return val;
+    
+    // Formatear los números con puntos
+    let numFormateado = numeros.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    
+    // Devolver letra + guion + número formateado (o solo número si no hay letra)
+    return letras ? `${letras}-${numFormateado}` : numFormateado;
   }
 
   function renderEditorItems() {
@@ -354,11 +360,9 @@
     const dateStr = document.getElementById("inDate").value;
     const clientName = document.getElementById("inClientName").value;
     
-    let clientId = document.getElementById("inClientId").value.trim();
-    if (/^\d+$/.test(clientId)) clientId = clientId.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-    let bankId = document.getElementById("inBankId").value.trim();
-    if (/^\d+$/.test(bankId)) bankId = bankId.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    // Aplicamos la nueva función a los campos
+    let clientId = formatCedulaRif(document.getElementById("inClientId").value);
+    let bankId = formatCedulaRif(document.getElementById("inBankId").value);
 
     // Lógica para mostrar u ocultar el número
     if (docType === "PRESUPUESTO") {
@@ -378,10 +382,13 @@
     document.getElementById("outDate").textContent = dateStr;
     document.getElementById("outClientName").textContent = clientName;
     
+    // Si empieza con J, G o E es RIF, si empieza con V o E es Cédula
     let prefijoClient = "CÉDULA: ";
-    if (clientId.toUpperCase().startsWith("J") || clientId.toUpperCase().startsWith("G") || clientId.toUpperCase().startsWith("E")) prefijoClient = "RIF: ";
-    document.getElementById("outClientId").textContent = prefijoClient + clientId;
+    if (clientId.toUpperCase().startsWith("J") || clientId.toUpperCase().startsWith("G")) {
+      prefijoClient = "RIF: ";
+    }
     
+    document.getElementById("outClientId").textContent = prefijoClient + clientId;
     document.getElementById("outCurrency").textContent = "PAGO EN " + currency;
 
     // Datos de pago
@@ -425,7 +432,7 @@
     document.getElementById("inDocType").value = "NOTA DE ENTREGA";
     document.getElementById("inDocNum").value = "00-0007";
     document.getElementById("inClientName").value = "JOSE RAMON HERNANDEZ GONZALEZ";
-    document.getElementById("inClientId").value = "13.115.067";
+    document.getElementById("inClientId").value = "V-13115067";
     document.getElementById("inDate").value = "20NOV2026";
     items = [{ desc: "Relacion mano de obra Adecuaciones Cava Almacen", qty: 1, price: 850 }];
     render();
@@ -435,7 +442,7 @@
     document.getElementById("inDocType").value = "PRESUPUESTO";
     document.getElementById("inDocNum").value = "00-0008";
     document.getElementById("inClientName").value = "WEEF SA";
-    document.getElementById("inClientId").value = "J-40719117-9";
+    document.getElementById("inClientId").value = "J-407191179";
     document.getElementById("inDate").value = "20NOV2026";
     items = [{ desc: "CILINDRO DE REFRIGERANTE R404A", qty: 1, price: 160 }];
     render();
