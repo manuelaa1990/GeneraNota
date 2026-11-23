@@ -3,7 +3,7 @@ const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  'https://cdn-icons-png.flaticon.com/512/2830/2830284.png'
+  './logo.png' // <-- Aquí agregamos tu logo
 ];
 
 self.addEventListener('install', (e) => {
