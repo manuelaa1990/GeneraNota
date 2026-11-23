@@ -2,8 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generador de Nota de Entrega - Repuestos MERIDA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Notas Repuestos MERIDA</title>
+  
+  <!-- Etiquetas PWA -->
+  <meta name="theme-color" content="#0f4c81">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2830/2830284.png">
+
   <style>
     :root {
       --primary: #0f4c81;
@@ -38,6 +44,7 @@
 
     @media (max-width: 960px) {
       .app-container { grid-template-columns: 1fr; }
+      body { padding: 10px; }
     }
 
     /* Panel de control */
@@ -69,8 +76,8 @@
     .field { margin-bottom: 10px; }
     .field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
     .field input, .field select, .field textarea {
-      width: 100%; padding: 7px 10px; border: 1px solid var(--border);
-      border-radius: 6px; font-size: 13px;
+      width: 100%; padding: 10px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 14px; /* Un poco más grande para dedos en móvil */
     }
     .field input:focus { outline: none; border-color: var(--primary); }
 
@@ -87,8 +94,8 @@
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      gap: 6px; padding: 10px 14px; border-radius: 6px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
+      gap: 6px; padding: 12px 14px; border-radius: 6px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
       border: 1px solid transparent; transition: 0.15s;
     }
     .btn-primary { background: var(--primary); color: #fff; width: 100%; }
@@ -100,19 +107,19 @@
     .btn-outline:hover { background: var(--bg); }
     .btn-danger {
       background: transparent; color: #cf222e; padding: 2px 6px;
-      font-size: 11px; cursor: pointer; border: none;
+      font-size: 12px; cursor: pointer; border: none;
     }
 
     .presets-bar { display: flex; gap: 6px; margin-bottom: 12px; }
     .btn-preset {
-      flex: 1; font-size: 11px; padding: 6px 8px; background: var(--primary-light);
+      flex: 1; font-size: 12px; padding: 8px; background: var(--primary-light);
       color: var(--primary); border: 1px solid #b6d4fe; border-radius: 6px;
       cursor: pointer; font-weight: 600;
     }
     .btn-preset:hover { background: #d3e5f5; }
 
     /* Hoja de Vista Previa */
-    .preview-wrapper { display: flex; justify-content: center; }
+    .preview-wrapper { display: flex; justify-content: center; overflow-x: auto; }
     .sheet {
       width: 215.9mm; min-height: 279.4mm; background: #fff;
       padding: 18mm 20mm; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -127,11 +134,14 @@
     }
     .brand-block { max-width: 65%; }
     .logo-badge {
-      width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--primary);
+      width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--primary);
       display: flex; align-items: center; justify-content: center;
       color: var(--primary); font-weight: 800; font-size: 12px;
       margin-bottom: 8px; background: var(--primary-light);
+      overflow: hidden;
     }
+    .logo-badge img { width: 100%; height: 100%; object-fit: cover; }
+    
     .brand-title { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.3px; }
     .brand-subtitle { font-size: 12.5px; color: #374151; margin-top: 2px; font-weight: 500; }
     .brand-meta { font-size: 11px; color: #4b5563; margin-top: 4px; line-height: 1.45; }
@@ -219,8 +229,8 @@
     <h2>Editor de Nota de Entrega</h2>
 
     <div class="presets-bar">
-      <button type="button" class="btn-preset" onclick="cargarPlantillaJose()">Cargar José Ramón</button>
-      <button type="button" class="btn-preset" onclick="cargarPlantillaWeef()">Cargar WEEF SA</button>
+      <button type="button" class="btn-preset" onclick="cargarPlantillaJose()">José Ramón</button>
+      <button type="button" class="btn-preset" onclick="cargarPlantillaWeef()">WEEF SA</button>
     </div>
 
     <div class="section-group">
@@ -236,7 +246,7 @@
         </div>
       </div>
       <div class="field">
-        <label>Fecha (Formato: 20NOV2026)</label>
+        <label>Fecha (Ej: 20NOV2026)</label>
         <input type="text" id="inDate" value="20NOV2026" oninput="render()" />
       </div>
     </div>
@@ -248,7 +258,7 @@
         <input type="text" id="inClientName" value="JOSE RAMON HERNANDEZ GONZALEZ" oninput="render()" />
       </div>
       <div class="field">
-        <label>RIF / CÉDULA (Ej: 13.115.067)</label>
+        <label>RIF / CÉDULA</label>
         <input type="text" id="inClientId" value="13.115.067" oninput="render()" />
       </div>
     </div>
@@ -260,7 +270,7 @@
     </div>
 
     <div class="section-group">
-      <h3>Datos de Pago (Binance & Banco)</h3>
+      <h3>Datos de Pago</h3>
       <div class="row-2">
         <div class="field">
           <label>Binance Pay ID</label>
@@ -272,7 +282,7 @@
         </div>
       </div>
       <div class="field">
-        <label>Cuenta Provincial (Corriente)</label>
+        <label>Cuenta Provincial</label>
         <input type="text" id="inBankAccount" value="01080137180100065512" oninput="render()" />
       </div>
       <div class="row-2">
@@ -281,13 +291,13 @@
           <input type="text" id="inBankHolder" value="Manuel Arias" oninput="render()" />
         </div>
         <div class="field">
-          <label>Cédula Titular (Ej: 19.880.792)</label>
+          <label>Cédula Titular</label>
           <input type="text" id="inBankId" value="19.880.792" oninput="render()" />
         </div>
       </div>
     </div>
 
-    <button type="button" class="btn btn-primary" onclick="window.print()">Imprimir / Guardar como PDF</button>
+    <button type="button" class="btn btn-primary" onclick="window.print()">📄 Imprimir / Guardar PDF</button>
   </aside>
 
   <!-- VISTA PREVIA DEL DOCUMENTO -->
@@ -297,7 +307,10 @@
         <!-- Encabezado -->
         <header class="doc-header">
           <div class="brand-block">
-            <div class="logo-badge">RM</div>
+            <!-- Aquí está el logo de la app -->
+            <div class="logo-badge">
+              <img src="https://cdn-icons-png.flaticon.com/512/2830/2830284.png" alt="Logo" style="filter: invert(22%) sepia(36%) saturate(1911%) hue-rotate(181deg) brightness(92%) contrast(94%);">
+            </div>
             <div class="brand-title">Repuestos MERIDA</div>
             <div class="brand-subtitle">Repuestos de refrigeración y aire acondicionado · Servicio de Diagnóstico y Reparación</div>
             <div class="brand-meta">
@@ -331,8 +344,8 @@
           <thead>
             <tr>
               <th style="width: 55%;">DESCRIPCIÓN</th>
-              <th class="num" style="width: 15%;">CANTIDAD</th>
-              <th class="num" style="width: 15%;">PRECIO UNITARIO</th>
+              <th class="num" style="width: 15%;">CANT.</th>
+              <th class="num" style="width: 15%;">PRECIO UNIT.</th>
               <th class="num" style="width: 15%;">TOTAL</th>
             </tr>
           </thead>
@@ -377,15 +390,11 @@
 </div>
 
 <script>
-  let items = [
-    { desc: "Relacion mano de obra Adecuaciones Cava Almacen", qty: 1, price: 850 }
-  ];
+  // Lógica de la App (Idéntica a la anterior)
+  let items = [{ desc: "Relacion mano de obra Adecuaciones Cava Almacen", qty: 1, price: 850 }];
 
   function formatNumber(num) {
-    return Number(num || 0).toLocaleString("es-VE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+    return Number(num || 0).toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function renderEditorItems() {
@@ -408,7 +417,7 @@
             <input type="number" step="0.01" value="${item.qty}" oninput="updateItem(${index}, 'qty', parseFloat(this.value))" />
           </div>
           <div class="field" style="margin-bottom:0;">
-            <label>Precio Unitario</label>
+            <label>Precio</label>
             <input type="number" step="0.01" value="${item.price}" oninput="updateItem(${index}, 'price', parseFloat(this.value))" />
           </div>
         </div>
@@ -439,14 +448,10 @@
     const clientName = document.getElementById("inClientName").value;
     
     let clientId = document.getElementById("inClientId").value.trim();
-    if (/^\d+$/.test(clientId)) {
-       clientId = clientId.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
+    if (/^\d+$/.test(clientId)) clientId = clientId.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
     let bankId = document.getElementById("inBankId").value.trim();
-    if (/^\d+$/.test(bankId)) {
-       bankId = bankId.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
+    if (/^\d+$/.test(bankId)) bankId = bankId.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
     document.getElementById("outDocNum").textContent = docNum;
     document.getElementById("outFooterDocNum").textContent = docNum;
@@ -454,13 +459,9 @@
     document.getElementById("outClientName").textContent = clientName;
     
     let prefijoClient = "CÉDULA: ";
-    if (clientId.toUpperCase().startsWith("J") || clientId.toUpperCase().startsWith("G") || clientId.toUpperCase().startsWith("E")) {
-      prefijoClient = "RIF: ";
-    }
+    if (clientId.toUpperCase().startsWith("J") || clientId.toUpperCase().startsWith("G") || clientId.toUpperCase().startsWith("E")) prefijoClient = "RIF: ";
     
     document.getElementById("outClientId").textContent = prefijoClient + clientId;
-    
-    // AQUI SE ELIMINÓ LA PALABRA (BINANCE)
     document.getElementById("outCurrency").textContent = "PAGO EN " + currency;
 
     document.getElementById("outBinanceId").textContent = document.getElementById("inBinanceId").value;
@@ -503,9 +504,7 @@
     document.getElementById("inClientName").value = "JOSE RAMON HERNANDEZ GONZALEZ";
     document.getElementById("inClientId").value = "13.115.067";
     document.getElementById("inDate").value = "20NOV2026";
-    items = [
-      { desc: "Relacion mano de obra Adecuaciones Cava Almacen", qty: 1, price: 850 }
-    ];
+    items = [{ desc: "Relacion mano de obra Adecuaciones Cava Almacen", qty: 1, price: 850 }];
     render();
   }
 
@@ -514,13 +513,19 @@
     document.getElementById("inClientName").value = "WEEF SA";
     document.getElementById("inClientId").value = "J-40719117-9";
     document.getElementById("inDate").value = "20NOV2026";
-    items = [
-      { desc: "CILINDRO DE REFRIGERANTE R404A", qty: 1, price: 160 }
-    ];
+    items = [{ desc: "CILINDRO DE REFRIGERANTE R404A", qty: 1, price: 160 }];
     render();
   }
 
+  // Iniciar
   render();
+
+  // Registrar Service Worker (Requerido para PWA)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').then(() => {
+      console.log('Service Worker Registrado');
+    });
+  }
 </script>
 
 </body>
