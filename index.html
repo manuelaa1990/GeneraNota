@@ -5,19 +5,26 @@
 <title>Nota de Entrega - Repuestos MERIDA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-  body { font-family: Arial, sans-serif; max-width: 850px; margin: 20px auto; padding: 20px; background:#f4f4f4; }
+  body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background:#f4f4f4; }
   h1 { color: #1a4d8f; }
   fieldset { margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; background:#fff; }
   legend { font-weight: bold; }
   label { display: block; margin-top: 8px; font-size: 14px; }
-  input, textarea { width: 100%; padding: 6px; box-sizing: border-box; }
+  input { width: 100%; padding: 6px; box-sizing: border-box; }
   table { width: 100%; border-collapse: collapse; margin-top: 10px; }
   th, td { border: 1px solid #999; padding: 6px; text-align: left; }
   .money { text-align: right; }
-  button { padding: 10px 18px; margin: 5px; cursor: pointer; font-size: 15px; border:none; border-radius:4px; }
+  button { padding: 8px 14px; margin: 5px 5px 5px 0; cursor: pointer; font-size: 14px; border:none; border-radius:4px; }
   .btn-pdf { background:#1a4d8f; color:#fff; }
   .btn-print { background:#555; color:#fff; }
+  .btn-add { background:#27ae60; color:#fff; }
+  .btn-del { background:#c0392b; color:#fff; padding:4px 10px; font-size:13px; }
 
+  /* Tabla editable del formulario */
+  #tablaItems input { padding:4px; }
+  #tablaItems td { vertical-align: middle; }
+
+  /* Hoja de la nota */
   #nota {
     background: #fff;
     padding: 30px 35px;
@@ -49,10 +56,19 @@
   </fieldset>
 
   <fieldset>
-    <legend>Descripción del Servicio</legend>
-    <label>Descripción: <input id="desc" value="Relacion mano de obra Adecuaciones Cava Almacen"></label>
-    <label>Cantidad: <input id="cant" type="number" value="1"></label>
-    <label>Precio unitario (USDT): <input id="precio" type="number" value="850"></label>
+    <legend>Productos / Servicios</legend>
+    <table id="tablaItems">
+      <thead>
+        <tr>
+          <th>DESCRIPCIÓN</th>
+          <th style="width:90px;">CANTIDAD</th>
+          <th style="width:130px;">PRECIO UNITARIO</th>
+          <th style="width:60px;">—</th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody"></tbody>
+    </table>
+    <button class="btn-add" onclick="agregarItem()">➕ Agregar ítem</button>
   </fieldset>
 
   <fieldset>
@@ -108,29 +124,102 @@
 </div>
 
 <script>
-function render() {
+/* ====== Estado de los ítems ====== */
+let items = [];
+
+function nuevoItem(desc = '', cant = 1, precio = 0) {
+  return { id: Date.now() + Math.random(), desc, cant, precio };
+}
+
+/* ====== Render del formulario de ítems ====== */
+function renderFormItems() {
+  const body = document.getElementById('itemsBody');
+  body.innerHTML = '';
+
+  items.forEach((it, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input data-i="${i}" data-f="desc" value="${it.desc.replace(/"/g,'&quot;')}"></td>
+      <td><input data-i="${i}" data-f="cant" type="number" min="0" step="0.01" value="${it.cant}"></td>
+      <td><input data-i="${i}" data-f="precio" type="number" min="0" step="0.01" value="${it.precio}"></td>
+      <td style="text-align:center;">
+        <button class="btn-del" onclick="eliminarItem(${i})">✕</button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+
+  body.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i;
+      const f = e.target.dataset.f;
+      items[i][f] = f === 'desc' ? e.target.value : (parseFloat(e.target.value) || 0);
+      guardarItems();
+      renderNota();
+    });
+  });
+}
+
+function agregarItem() {
+  items.push(nuevoItem());
+  guardarItems();
+  renderFormItems();
+  renderNota();
+}
+
+function eliminarItem(i) {
+  items.splice(i, 1);
+  if (items.length === 0) items.push(nuevoItem());
+  guardarItems();
+  renderFormItems();
+  renderNota();
+}
+
+/* ====== Persistencia ====== */
+function guardarItems() {
+  localStorage.setItem('merida_items', JSON.stringify(items));
+}
+
+function cargarItems() {
+  try {
+    const raw = localStorage.getItem('merida_items');
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length) {
+        items = arr.map(x => nuevoItem(x.desc, x.cant, x.precio));
+        return;
+      }
+    }
+  } catch(e) {}
+  /* Valores por defecto (los de la nota original) */
+  items = [ nuevoItem('Relacion mano de obra Adecuaciones Cava Almacen', 1, 850) ];
+}
+
+/* ====== Render de la nota (salida) ====== */
+function renderNota() {
   const v = id => document.getElementById(id).value;
 
-  /* CLIENTE con rótulos solicitados */
   document.getElementById('outCliente').innerHTML =
     `<span class="rotulo">RAZÓN SOCIAL / NOMBRE:</span> ${v('clienteNombre')}<br>
      <span class="rotulo">RIF / CÉDULA:</span> ${v('clienteCedula')}`;
 
   document.getElementById('outModalidad').textContent = v('modalidad');
 
-  const cant   = parseFloat(v('cant'))   || 0;
-  const precio = parseFloat(v('precio')) || 0;
-  const total  = cant * precio;
+  let total = 0;
+  const filas = items.map(it => {
+    const sub = (it.cant || 0) * (it.precio || 0);
+    total += sub;
+    return `<tr>
+      <td>${it.desc || ''}</td>
+      <td>${(+it.cant).toFixed(2)}</td>
+      <td class="money">${(+it.precio).toFixed(2)} USDT</td>
+      <td class="money">${sub.toFixed(2)} USDT</td>
+    </tr>`;
+  }).join('');
 
-  document.getElementById('outItems').innerHTML = `
+  document.getElementById('outItems').innerHTML = filas + `
     <tr>
-      <td>${v('desc')}</td>
-      <td>${cant.toFixed(2)}</td>
-      <td class="money">${precio.toFixed(2)} USDT</td>
-      <td class="money">${total.toFixed(2)} USDT</td>
-    </tr>
-    <tr>
-      <td colspan="3"><b>Total</b></td>
+      <td colspan="3" style="text-align:right;"><b>Total</b></td>
       <td class="money"><b>${total.toFixed(2)} USDT</b></td>
     </tr>`;
 
@@ -146,54 +235,50 @@ function render() {
      Número de Cuenta: ${v('bancoNumero')}`;
 }
 
+/* ====== Fecha ====== */
 function setFecha() {
   const d = new Date();
-  const fecha = d.toLocaleString('es-VE', {
-    day:'2-digit', month:'short', year:'numeric',
-    hour:'2-digit', minute:'2-digit', hour12:true
-  });
-  document.getElementById('fechaNota').textContent = fecha;
+  document.getElementById('fechaNota').textContent =
+    d.toLocaleString('es-VE', { day:'2-digit', month:'short', year:'numeric',
+      hour:'2-digit', minute:'2-digit', hour12:true });
 }
 
-const campos = ['clienteNombre','clienteCedula','modalidad','desc','cant','precio',
-                'binanceId','binanceCorreo','bancoTitular','bancoCedula','bancoTipo','bancoNumero'];
-
-function cargar() {
-  campos.forEach(id => {
-    const el = document.getElementById(id);
-    const guardado = localStorage.getItem('merida_' + id);
-    if (guardado !== null) el.value = guardado;
-  });
-}
-
+/* ====== PDF ====== */
 function generarPDF() {
   const elemento = document.getElementById('nota');
   const nombreArchivo = 'NotaEntrega_' +
     document.getElementById('clienteNombre').value.replace(/\s+/g,'_') + '.pdf';
 
-  const opt = {
-    margin:       [10, 10, 10, 10],
-    filename:     nombreArchivo,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true },
-    jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
-  };
-
-  html2pdf().set(opt).from(elemento).save();
+  html2pdf().set({
+    margin:      [10,10,10,10],
+    filename:    nombreArchivo,
+    image:       { type:'jpeg', quality:0.98 },
+    html2canvas: { scale:2, useCORS:true },
+    jsPDF:       { unit:'mm', format:'letter', orientation:'portrait' }
+  }).from(elemento).save();
 }
 
+/* ====== Init ====== */
+const campos = ['clienteNombre','clienteCedula','modalidad',
+                'binanceId','binanceCorreo',
+                'bancoTitular','bancoCedula','bancoTipo','bancoNumero'];
+
 document.addEventListener('DOMContentLoaded', () => {
-  cargar();
-  setFecha();
-  render();
+  cargarItems();
+  renderFormItems();
 
   campos.forEach(id => {
     const el = document.getElementById(id);
+    const g = localStorage.getItem('merida_' + id);
+    if (g !== null) el.value = g;
     el.addEventListener('input', () => {
       localStorage.setItem('merida_' + id, el.value);
-      render();
+      renderNota();
     });
   });
+
+  setFecha();
+  renderNota();
 });
 </script>
 </body>
