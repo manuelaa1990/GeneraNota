@@ -200,7 +200,6 @@
           <!-- Fecha y Número arriba a la derecha -->
           <div class="doc-top-right">
             <div class="doc-date" id="outDate">20NOV2026</div>
-            <!-- Este es el número que se oculta en presupuestos -->
             <div class="doc-num-right" id="outDocNumBlock">N° <span id="outDocNum">00-0007</span></div>
           </div>
           
@@ -230,7 +229,7 @@
           <div>
             <div class="client-label">CLIENTE</div>
             <div class="client-name" id="outClientName">JOSE RAMON HERNANDEZ GONZALEZ</div>
-            <div class="client-id" id="outClientId">CÉDULA: 13.115.067</div>
+            <div class="client-id" id="outClientId">CÉDULA: V-13115067</div>
           </div>
           <div class="payment-mode-box">
             <div class="payment-mode-label">MODALIDAD DE PAGO</div>
@@ -268,7 +267,7 @@
             <div class="payment-col">
               <h4>DATOS PARA TRANSFERENCIA BANCARIA (BANCO PROVINCIAL)</h4>
               <p><strong>Titular:</strong> <span id="outBankHolder">Manuel Arias</span></p>
-              <p><strong>Cédula / RIF:</strong> <span id="outBankId">V-19.880.792</span></p>
+              <p><strong>Cédula / RIF:</strong> <span id="outBankId">V-19880792</span></p>
               <p><strong>Tipo de Cuenta:</strong> Cuenta Corriente</p>
               <p><strong>Número de Cuenta:</strong> <span id="outBankAccount">01080137180100065512</span></p>
             </div>
@@ -290,23 +289,6 @@
 
   function formatNumber(num) {
     return Number(num || 0).toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  // NUEVA FUNCIÓN: Formatea cédulas y RIF (mantiene la letra y coloca puntos a los números)
-  function formatCedulaRif(val) {
-    if (!val) return "";
-    // Extraer solo letras iniciales (si las hay) y los números
-    let letras = val.replace(/[^a-zA-Z]/g, '').toUpperCase();
-    let numeros = val.replace(/[^0-9]/g, '');
-    
-    // Si no hay números, devolver tal cual
-    if (!numeros) return val;
-    
-    // Formatear los números con puntos
-    let numFormateado = numeros.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    
-    // Devolver letra + guion + número formateado (o solo número si no hay letra)
-    return letras ? `${letras}-${numFormateado}` : numFormateado;
   }
 
   function renderEditorItems() {
@@ -360,9 +342,9 @@
     const dateStr = document.getElementById("inDate").value;
     const clientName = document.getElementById("inClientName").value;
     
-    // Aplicamos la nueva función a los campos
-    let clientId = formatCedulaRif(document.getElementById("inClientId").value);
-    let bankId = formatCedulaRif(document.getElementById("inBankId").value);
+    // AHORA TOMA LOS VALORES TAL CUAL, SIN MODIFICAR NADA
+    let clientId = document.getElementById("inClientId").value.trim();
+    let bankId = document.getElementById("inBankId").value.trim();
 
     // Lógica para mostrar u ocultar el número
     if (docType === "PRESUPUESTO") {
@@ -382,9 +364,9 @@
     document.getElementById("outDate").textContent = dateStr;
     document.getElementById("outClientName").textContent = clientName;
     
-    // Si empieza con J, G o E es RIF, si empieza con V o E es Cédula
+    // Lógica para el prefijo (CÉDULA o RIF)
     let prefijoClient = "CÉDULA: ";
-    if (clientId.toUpperCase().startsWith("J") || clientId.toUpperCase().startsWith("G")) {
+    if (clientId.toUpperCase().startsWith("J") || clientId.toUpperCase().startsWith("G") || clientId.toUpperCase().startsWith("E")) {
       prefijoClient = "RIF: ";
     }
     
