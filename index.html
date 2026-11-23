@@ -2,304 +2,207 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b0f14">
-<title>HVAC/R Compressor Engine V0.3</title>
+<title>Nota de Entrega - Repuestos MERIDA</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-:root{
-  --bg:#0b0f14;--panel:#121923;--panel2:#0e151e;--line:#263342;
-  --text:#edf3f8;--muted:#9aa9b7;--accent:#58c7ff;--ok:#4ade80;
-  --warn:#facc15;--bad:#fb7185;--shadow:0 12px 30px rgba(0,0,0,.28)
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-header{padding:18px 16px 12px;position:sticky;top:0;background:rgba(11,15,20,.94);backdrop-filter:blur(12px);z-index:5;border-bottom:1px solid var(--line)}
-h1{font-size:22px;margin:0 0 4px}.sub{font-size:12px;color:var(--muted)}
-main{max-width:1100px;margin:auto;padding:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
-input,select{width:100%;background:#0b1118;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px;font-size:15px;outline:none}
-input:focus,select:focus{border-color:var(--accent)}
-button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer}
-.primary{background:var(--accent);color:#061018}.secondary{background:#1b2633;color:var(--text);border:1px solid var(--line)}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.status{padding:9px 11px;border-radius:9px;background:#0b1118;border:1px solid var(--line);font-size:12px;color:var(--muted)}
-.status.ok{border-color:rgba(74,222,128,.4);color:var(--ok)}
-.status.bad{border-color:rgba(251,113,133,.4);color:var(--bad)}
-.status.warn{border-color:rgba(250,204,21,.4);color:var(--warn)}
-h2{font-size:16px;margin:0 0 10px} h3{font-size:14px;margin:12px 0 7px}
-.mini{font-size:12px;color:var(--muted)}
-.result{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px;margin-top:8px}
-.result a{color:var(--accent);font-weight:700;text-decoration:none}.result a:hover{text-decoration:underline}
-.badge{display:inline-block;font-size:10px;padding:3px 7px;border-radius:999px;background:#1b2633;color:#c8d5df;margin-right:5px}
-.badge.official{color:#86efac;border:1px solid rgba(74,222,128,.3)}
-.badge.pdf{color:#fbbf24;border:1px solid rgba(250,204,21,.3)}
-.snippet{font-size:12px;color:#c1ccd5;line-height:1.45;margin-top:7px}
-.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-.kv div{background:#0b1118;border:1px solid var(--line);border-radius:8px;padding:8px}
-.k{display:block;font-size:10px;color:var(--muted)}.v{font-size:13px;font-weight:700}
-table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px solid var(--line);padding:7px;text-align:left;vertical-align:top}th{color:var(--muted)}
-.hidden{display:none!important}
-.epaper{--bg:#e7e2d2;--panel:#f3efe2;--panel2:#ebe6d7;--line:#b5ad98;--text:#222;--muted:#655f54;--accent:#1769aa;--ok:#18733a;--warn:#8a6500;--bad:#a11}
-.epaper header{background:rgba(231,226,210,.94)}
-.epaper input,.epaper select,.epaper .status,.epaper .kv div{background:#f8f4e8;color:#222}
-@media(max-width:700px){.grid,.grid3,.kv{grid-template-columns:1fr}.row button{width:100%}header{position:static}}
+  body { font-family: Arial, sans-serif; max-width: 850px; margin: 20px auto; padding: 20px; background:#f4f4f4; }
+  h1 { color: #1a4d8f; }
+  fieldset { margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; background:#fff; }
+  legend { font-weight: bold; }
+  label { display: block; margin-top: 8px; font-size: 14px; }
+  input, textarea { width: 100%; padding: 6px; box-sizing: border-box; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px solid #999; padding: 6px; text-align: left; }
+  .money { text-align: right; }
+  .no-print { }
+  button { padding: 10px 18px; margin: 5px; cursor: pointer; font-size: 15px; border:none; border-radius:4px; }
+  .btn-pdf { background:#1a4d8f; color:#fff; }
+  .btn-print { background:#555; color:#fff; }
+
+  /* Hoja de la nota */
+  #nota {
+    background: #fff;
+    padding: 30px 35px;
+    margin-top: 25px;
+    color: #111;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  #nota h2 { margin:0 0 4px 0; color:#1a4d8f; }
+  #nota .subtitulo { font-size:12px; color:#444; margin-bottom:8px; }
+  #nota .empresa { font-size:12px; border-bottom:1px solid #ccc; padding-bottom:8px; margin-bottom:15px; }
+  #nota h3 { font-size:13px; margin:14px 0 4px 0; border-bottom:1px solid #ddd; padding-bottom:2px; }
+  #nota table { font-size:12px; }
+  #nota th { background:#eef2f8; }
+  #nota .footer { margin-top:20px; font-size:11px; color:#666; font-style:italic; }
 </style>
 </head>
 <body>
-<header>
-  <h1>HVAC/R Compressor Engine</h1>
-  <div class="sub">V0.3 · búsqueda web automática · referencias · ficha técnica · envelope · ASHRAE</div>
-</header>
 
-<main>
-  <section class="card">
-    <div class="row" style="justify-content:space-between">
-      <div>
-        <h2>Conexión</h2>
-        <div class="mini">El navegador nunca contiene la clave de Tavily ni la de Gemini.</div>
-      </div>
-      <button id="themeBtn" class="secondary">ePaper</button>
-    </div>
-    <div class="row" style="margin-top:10px">
-      <span id="health" class="status">Comprobando backend…</span>
-      <span id="provider" class="status">Proveedor: —</span>
-    </div>
-  </section>
+<h1 class="no-print">Nota de Entrega – Repuestos MERIDA</h1>
 
-  <section class="card">
-    <h2>Buscar compresor</h2>
-    <div class="grid">
-      <div>
-        <label>Código / modelo exacto</label>
-        <input id="model" placeholder="Ej.: QD75H" autocomplete="off">
-      </div>
-      <div>
-        <label>Refrigerante (opcional)</label>
-        <input id="refrigerant" placeholder="Ej.: R134a">
-      </div>
-      <div>
-        <label>Aplicación</label>
-        <select id="application">
-          <option value="">Automática</option>
-          <option>LBP</option><option>MBP</option><option>HBP</option>
-          <option>HMBP</option><option>CBP</option><option>A/C</option>
-        </select>
-      </div>
-      <div>
-        <label>Capacidad BTU/h (opcional)</label>
-        <input id="capacity" type="number" placeholder="Ej.: 12000">
-      </div>
-      <div>
-        <label>Voltaje (opcional)</label>
-        <input id="voltage" placeholder="Ej.: 115 V">
-      </div>
-      <div>
-        <label>Condición de evaporación °C (opcional)</label>
-        <input id="tevap" type="number" step="0.1" placeholder="Ej.: -10">
-      </div>
-      <div>
-        <label>Condición de condensación °C (opcional)</label>
-        <input id="tcond" type="number" step="0.1" placeholder="Ej.: 45">
-      </div>
-    </div>
-    <div class="row" style="margin-top:12px">
-      <button id="searchBtn" class="primary">Buscar automáticamente</button>
-      <button id="clearBtn" class="secondary">Limpiar</button>
-    </div>
-    <div id="message" class="mini" style="margin-top:9px"></div>
-  </section>
+<!-- ===== FORMULARIO EDITABLE ===== -->
+<div class="no-print">
+  <fieldset>
+    <legend>Datos del Cliente</legend>
+    <label>Nombre: <input id="clienteNombre" value="JOSE RAMON HERNANDEZ GONZALEZ"></label>
+    <label>Cédula: <input id="clienteCedula" value="V-13115067"></label>
+    <label>Modalidad de pago: <input id="modalidad" value="PAGO EN USDT (BINANCE)"></label>
+  </fieldset>
 
-  <section id="refsCard" class="card hidden">
-    <h2>Referencias encontradas automáticamente</h2>
-    <div id="refs"></div>
-  </section>
+  <fieldset>
+    <legend>Descripción del Servicio</legend>
+    <label>Descripción: <input id="desc" value="Relacion mano de obra Adecuaciones Cava Almacen"></label>
+    <label>Cantidad: <input id="cant" type="number" value="1"></label>
+    <label>Precio unitario (USDT): <input id="precio" type="number" value="850"></label>
+  </fieldset>
 
-  <section id="recordCard" class="card hidden">
-    <h2>Ficha técnica consolidada</h2>
-    <div id="record"></div>
-  </section>
+  <fieldset>
+    <legend>Datos para pago en USDT (Binance Pay)</legend>
+    <label>Binance ID: <input id="binanceId" value="1201575584"></label>
+    <label>Correo asociado: <input id="binanceCorreo" value="bigfreeze689@gmail.com"></label>
+  </fieldset>
 
-  <section id="envelopeCard" class="card hidden">
-    <h2>Envelope / aplicación</h2>
-    <div id="envelope"></div>
-  </section>
+  <fieldset>
+    <legend>Datos para Transferencia Bancaria (Banco Provincial)</legend>
+    <label>Titular: <input id="bancoTitular" value="Manuel Arias"></label>
+    <label>Cédula / RIF: <input id="bancoCedula" value="V-19880792"></label>
+    <label>Tipo de cuenta: <input id="bancoTipo" value="Cuenta Corriente"></label>
+    <label>Número de cuenta: <input id="bancoNumero" value="01080137180100065512"></label>
+  </fieldset>
 
-  <section id="conflictsCard" class="card hidden">
-    <h2>Conflictos entre fuentes</h2>
-    <div id="conflicts"></div>
-  </section>
+  <div style="text-align:center; margin-top:10px;">
+    <button class="btn-pdf" onclick="generarPDF()">📄 Generar PDF</button>
+    <button class="btn-print" onclick="window.print()">🖨 Imprimir</button>
+  </div>
+</div>
 
-  <section id="sourcesCard" class="card hidden">
-    <h2>Fuentes utilizadas por el análisis</h2>
-    <div id="sources"></div>
-  </section>
+<!-- ===== HOJA QUE SE IMPRIME / EXPORTA ===== -->
+<div id="nota">
+  <h2>Repuestos MERIDA</h2>
+  <div class="subtitulo">Repuestos de refrigeración y aire acondicionado • Servicio de Diagnóstico y Reparación</div>
+  <div class="empresa">
+    RIF: J-508305876<br>
+    Calle Don Bosco Casa N/A Nro S/N Sector Creolandia, Judibana, Falcón, Venezuela<br>
+    Teléfono: 04246926108 / 04126666397<br>
+    <span id="fechaNota"></span>
+  </div>
 
-  <section class="card">
-    <h2>Historial local</h2>
-    <div id="history" class="mini">Sin búsquedas guardadas.</div>
-  </section>
-</main>
+  <h3>CLIENTE</h3>
+  <div id="outCliente"></div>
+
+  <h3>MODALIDAD DE PAGO</h3>
+  <div id="outModalidad"></div>
+
+  <table>
+    <thead>
+      <tr><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>PRECIO UNITARIO</th><th>TOTAL</th></tr>
+    </thead>
+    <tbody id="outItems"></tbody>
+  </table>
+
+  <h3>DATOS PARA PAGO EN USDT (BINANCE PAY)</h3>
+  <div id="outBinance"></div>
+
+  <h3>DATOS PARA TRANSFERENCIA BANCARIA (BANCO PROVINCIAL)</h3>
+  <div id="outBanco"></div>
+
+  <div class="footer">Documento de entrega. No constituye factura fiscal.</div>
+</div>
 
 <script>
-const API = window.COMPRESSOR_SEARCH_API || "https://hvacr-compressor-engine.onrender.com/api/compressor-search";
-const HEALTH = API.replace(/\/api\/compressor-search$/, "/health");
+/* ====== Render de la nota ====== */
+function render() {
+  const v = id => document.getElementById(id).value;
 
-const $ = id => document.getElementById(id);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const val = id => $(id).value.trim();
+  document.getElementById('outCliente').innerHTML =
+    `${v('clienteNombre')}<br>Cédula: ${v('clienteCedula')}`;
 
-function setMessage(text, cls="") {
-  $("message").textContent = text;
-  $("message").className = "mini " + cls;
+  document.getElementById('outModalidad').textContent = v('modalidad');
+
+  const cant   = parseFloat(v('cant'))   || 0;
+  const precio = parseFloat(v('precio')) || 0;
+  const total  = cant * precio;
+
+  document.getElementById('outItems').innerHTML = `
+    <tr>
+      <td>${v('desc')}</td>
+      <td>${cant.toFixed(2)}</td>
+      <td class="money">${precio.toFixed(2)} USDT</td>
+      <td class="money">${total.toFixed(2)} USDT</td>
+    </tr>
+    <tr>
+      <td colspan="3"><b>Total</b></td>
+      <td class="money"><b>${total.toFixed(2)} USDT</b></td>
+    </tr>`;
+
+  document.getElementById('outBinance').innerHTML =
+    `Binance ID: ${v('binanceId')}<br>
+     Correo asociado: ${v('binanceCorreo')}<br>
+     Monto a transferir: <b>${total.toFixed(2)} USDT</b>`;
+
+  document.getElementById('outBanco').innerHTML =
+    `Titular: ${v('bancoTitular')}<br>
+     Cédula / RIF: ${v('bancoCedula')}<br>
+     Tipo de Cuenta: ${v('bancoTipo')}<br>
+     Número de Cuenta: ${v('bancoNumero')}`;
 }
 
-function sourceBadge(r){
-  const t = (r.source_type || "").toLowerCase();
-  if(t.includes("official") || t.includes("manufacturer")) return '<span class="badge official">FABRICANTE / OFICIAL</span>';
-  if(t.includes("pdf")) return '<span class="badge pdf">PDF / DATASHEET</span>';
-  if(t.includes("catalog")) return '<span class="badge">CATÁLOGO</span>';
-  if(t.includes("distributor")) return '<span class="badge">DISTRIBUIDOR</span>';
-  return '<span class="badge">WEB</span>';
+/* ====== Fecha ====== */
+function setFecha() {
+  const d = new Date();
+  const fecha = d.toLocaleString('es-VE', {
+    day:'2-digit', month:'short', year:'numeric',
+    hour:'2-digit', minute:'2-digit', hour12:true
+  });
+  document.getElementById('fechaNota').textContent = fecha;
 }
 
-function renderReferences(items){
-  $("refsCard").classList.remove("hidden");
-  $("refs").innerHTML = items.length ? items.map((r,i)=>`
-    <article class="result">
-      ${sourceBadge(r)}
-      <span class="badge">#${i+1}</span>
-      <div style="margin-top:6px"><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.title || r.url)}</a></div>
-      <div class="mini">${esc(r.domain || "")}${r.query ? " · consulta: " + esc(r.query) : ""}</div>
-      <div class="snippet">${esc(r.snippet || "")}</div>
-    </article>
-  `).join("") : '<div class="mini">No se encontraron referencias.</div>';
+/* ====== Persistencia ====== */
+const campos = ['clienteNombre','clienteCedula','modalidad','desc','cant','precio',
+                'binanceId','binanceCorreo','bancoTitular','bancoCedula','bancoTipo','bancoNumero'];
+
+function cargar() {
+  campos.forEach(id => {
+    const el = document.getElementById(id);
+    const guardado = localStorage.getItem('merida_' + id);
+    if (guardado !== null) el.value = guardado;
+  });
 }
 
-function renderRecord(d){
-  $("recordCard").classList.remove("hidden");
-  const fields = [
-    ["Modelo",d.model],["Fabricante",d.manufacturer],["Refrigerante",d.refrigerant],
-    ["Tipo",d.type],["Voltaje",d.voltage],["Frecuencia",d.frequency],["Fase",d.phase],
-    ["Capacidad kW",d.capacity_kW],["Capacidad BTU/h",d.capacity_BTUh],
-    ["Desplazamiento cm³/rev",d.displacement_cm3_rev],["RLA A",d.RLA_A],["LRA A",d.LRA_A],
-    ["Potencia kW",d.power_kW],["COP",d.COP],["Aceite",d.oil],["Capacitor",d.capacitor],
-    ["Máx. descarga °C",d.max_discharge_C]
-  ];
-  $("record").innerHTML = `
-    <div class="kv">${fields.map(x=>`<div><span class="k">${esc(x[0])}</span><span class="v">${esc(x[1] || "—")}</span></div>`).join("")}</div>
-    ${d.summary ? `<h3>Resumen</h3><div class="snippet">${esc(d.summary)}</div>` : ""}
-    ${d.test_conditions ? `<h3>Condiciones de prueba publicadas</h3><div class="snippet">${esc(d.test_conditions)}</div>` : ""}
-  `;
+/* ====== Generar PDF ====== */
+function generarPDF() {
+  const elemento = document.getElementById('nota');
+
+  const nombreArchivo = 'NotaEntrega_' +
+    document.getElementById('clienteNombre').value.replace(/\s+/g,'_') +
+    '.pdf';
+
+  const opt = {
+    margin:       [10, 10, 10, 10], // mm
+    filename:     nombreArchivo,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(elemento).save();
 }
 
-function renderEnvelope(e){
-  if(!e){$("envelopeCard").classList.add("hidden");return}
-  $("envelopeCard").classList.remove("hidden");
-  const rows = [
-    ["Aplicación",e.application_class],
-    ["Tevap mín. °C",e.evap_min_C],["Tevap máx. °C",e.evap_max_C],
-    ["Tcond mín. °C",e.cond_min_C],["Tcond máx. °C",e.cond_max_C],
-    ["Máx. descarga °C",e.max_discharge_C],["Máx. relación de presión",e.max_pressure_ratio],
-    ["Estado actual",e.status],["Nota",e.notes]
-  ];
-  $("envelope").innerHTML = `
-    <div class="kv">${rows.map(x=>`<div><span class="k">${esc(x[0])}</span><span class="v">${esc(x[1] || "—")}</span></div>`).join("")}</div>
-    ${Array.isArray(e.points)&&e.points.length ? `<h3>Puntos de envelope publicados</h3><table><thead><tr><th>Tevap °C</th><th>Tcond °C</th><th>Nota</th></tr></thead><tbody>${e.points.map(p=>`<tr><td>${esc(p.Tevap_C)}</td><td>${esc(p.Tcond_C)}</td><td>${esc(p.note)}</td></tr>`).join("")}</tbody></table>`:""}
-    ${Array.isArray(e.ashrae_tests)&&e.ashrae_tests.length ? `<h3>Puntos ASHRAE publicados</h3><table><thead><tr><th>Tevap</th><th>Tcond</th><th>Retorno</th><th>Líquido</th><th>Amb.</th><th>Nota</th></tr></thead><tbody>${e.ashrae_tests.map(p=>`<tr><td>${esc(p.Tevap_C)}</td><td>${esc(p.Tcond_C)}</td><td>${esc(p.Treturn_C)}</td><td>${esc(p.Tliquid_C)}</td><td>${esc(p.ambient_C)}</td><td>${esc(p.note)}</td></tr>`).join("")}</tbody></table>`:""}
-  `;
-}
+/* ====== Init ====== */
+document.addEventListener('DOMContentLoaded', () => {
+  cargar();
+  setFecha();
+  render();
 
-function renderConflicts(arr){
-  if(!Array.isArray(arr)||!arr.length){$("conflictsCard").classList.add("hidden");return}
-  $("conflictsCard").classList.remove("hidden");
-  $("conflicts").innerHTML = arr.map(x=>`<div class="result"><b>${esc(x.field || "Dato")}</b><div class="snippet">${esc(x.description || x)}</div></div>`).join("");
-}
-
-function renderSources(arr){
-  if(!Array.isArray(arr)||!arr.length){$("sourcesCard").classList.add("hidden");return}
-  $("sourcesCard").classList.remove("hidden");
-  $("sources").innerHTML = arr.map(x=>`<div class="result">${sourceBadge(x)} <a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${esc(x.name || x.url)}</a><div class="mini">${esc(x.type || "")}</div></div>`).join("");
-}
-
-function saveHistory(model, count){
-  const key="hvacr_v03_history";
-  const h=JSON.parse(localStorage.getItem(key)||"[]");
-  h.unshift({model,count,ts:new Date().toLocaleString()});
-  localStorage.setItem(key,JSON.stringify(h.slice(0,20)));
-  renderHistory();
-}
-function renderHistory(){
-  const h=JSON.parse(localStorage.getItem("hvacr_v03_history")||"[]");
-  $("history").innerHTML=h.length ? h.map(x=>`<div class="result"><b>${esc(x.model)}</b> · ${esc(x.count)} referencias · ${esc(x.ts)}</div>`).join("") : "Sin búsquedas guardadas.";
-}
-
-async function checkHealth(){
-  try{
-    const r=await fetch(HEALTH);
-    const d=await r.json();
-    $("health").textContent=d.ok ? "Backend conectado" : "Backend con problemas";
-    $("health").className="status "+(d.ok?"ok":"bad");
-    $("provider").textContent=`Búsqueda: ${d.search_provider || "—"} · Gemini: ${d.gemini_model || "—"}`;
-  }catch(e){
-    $("health").textContent="Backend no disponible";
-    $("health").className="status bad";
-    $("provider").textContent="Proveedor: —";
-  }
-}
-
-async function search(){
-  const model=val("model");
-  if(!model){setMessage("Introduce el código/modelo del compresor.","bad");$("model").focus();return}
-  $("searchBtn").disabled=true;
-  setMessage("Buscando automáticamente en la web…");
-  ["refsCard","recordCard","envelopeCard","conflictsCard","sourcesCard"].forEach(id=>$(id).classList.add("hidden"));
-  try{
-    const payload={
-      mode:"model",
-      query:model,
-      requested_model:model,
-      refrigerant:val("refrigerant"),
-      application:val("application"),
-      capacity_BTUh:val("capacity"),
-      voltage:val("voltage"),
-      Tevap_C:val("tevap"),
-      Tcond_C:val("tcond")
-    };
-    const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-    const d=await r.json();
-    if(!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
-    renderReferences(d.references || []);
-    if(d.record) renderRecord(d.record);
-    if(d.envelope) renderEnvelope(d.envelope);
-    renderConflicts(d.conflicts);
-    renderSources(d.sources);
-    saveHistory(model,(d.references||[]).length);
-    setMessage(`Búsqueda completada: ${(d.references||[]).length} referencias encontradas.`);
-  }catch(e){
-    setMessage("Error: "+e.message,"bad");
-  }finally{
-    $("searchBtn").disabled=false;
-  }
-}
-
-$("searchBtn").addEventListener("click",search);
-$("model").addEventListener("keydown",e=>{if(e.key==="Enter")search()});
-$("clearBtn").addEventListener("click",()=>{
-  ["model","refrigerant","capacity","voltage","tevap","tcond"].forEach(id=>$(id).value="");
-  $("application").value="";
-  ["refsCard","recordCard","envelopeCard","conflictsCard","sourcesCard"].forEach(id=>$(id).classList.add("hidden"));
-  setMessage("");
+  campos.forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => {
+      localStorage.setItem('merida_' + id, el.value);
+      render();
+    });
+  });
 });
-$("themeBtn").addEventListener("click",()=>{
-  document.body.classList.toggle("epaper");
-  $("themeBtn").textContent=document.body.classList.contains("epaper")?"Oscuro":"ePaper";
-  localStorage.setItem("hvacr_v03_theme",document.body.classList.contains("epaper")?"epaper":"dark");
-});
-if(localStorage.getItem("hvacr_v03_theme")==="epaper"){document.body.classList.add("epaper");$("themeBtn").textContent="Oscuro"}
-renderHistory();checkHealth();
 </script>
 </body>
 </html>
