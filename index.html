@@ -8,9 +8,11 @@
   <!-- Etiquetas PWA -->
   <meta name="theme-color" content="#0f4c81">
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2830/2830284.png">
+  <!-- Aquí enlazamos tu logo para iPhone -->
+  <link rel="apple-touch-icon" href="logo.png">
 
   <style>
+    /* ... (Todo el CSS anterior se mantiene igual) ... */
     :root {
       --primary: #0f4c81;
       --primary-light: #e8f1f8;
@@ -19,212 +21,82 @@
       --muted: #59636e;
       --bg: #f6f8fa;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      padding: 20px;
-    }
-
-    .app-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    @media (max-width: 960px) {
-      .app-container { grid-template-columns: 1fr; }
-      body { padding: 10px; }
-    }
-
-    /* Panel de control */
-    .editor-panel {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-
-    .editor-panel h2 {
-      font-size: 16px;
-      color: var(--primary);
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 20px; }
+    .app-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 960px) { .app-container { grid-template-columns: 1fr; } body { padding: 10px; } }
+    .editor-panel { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+    .editor-panel h2 { font-size: 16px; color: var(--primary); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
     .section-group { margin-bottom: 18px; }
-    .section-group h3 {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
+    .section-group h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 8px; }
     .field { margin-bottom: 10px; }
     .field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
-    .field input, .field select, .field textarea {
-      width: 100%; padding: 10px; border: 1px solid var(--border);
-      border-radius: 6px; font-size: 14px; /* Un poco más grande para dedos en móvil */
-    }
+    .field input, .field select, .field textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
     .field input:focus { outline: none; border-color: var(--primary); }
-
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-    .item-editor-card {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 6px; padding: 10px; margin-bottom: 8px;
-    }
-    .item-editor-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 6px; font-size: 12px; font-weight: 600;
-    }
-
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      gap: 6px; padding: 12px 14px; border-radius: 6px;
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      border: 1px solid transparent; transition: 0.15s;
-    }
+    .item-editor-card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 8px; }
+    .item-editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; font-weight: 600; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 14px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.15s; }
     .btn-primary { background: var(--primary); color: #fff; width: 100%; }
     .btn-primary:hover { background: #0b3a63; }
-    .btn-outline {
-      background: #fff; border-color: var(--border); color: var(--text);
-      width: 100%; margin-top: 6px;
-    }
+    .btn-outline { background: #fff; border-color: var(--border); color: var(--text); width: 100%; margin-top: 6px; }
     .btn-outline:hover { background: var(--bg); }
-    .btn-danger {
-      background: transparent; color: #cf222e; padding: 2px 6px;
-      font-size: 12px; cursor: pointer; border: none;
-    }
-
+    .btn-danger { background: transparent; color: #cf222e; padding: 2px 6px; font-size: 12px; cursor: pointer; border: none; }
     .presets-bar { display: flex; gap: 6px; margin-bottom: 12px; }
-    .btn-preset {
-      flex: 1; font-size: 12px; padding: 8px; background: var(--primary-light);
-      color: var(--primary); border: 1px solid #b6d4fe; border-radius: 6px;
-      cursor: pointer; font-weight: 600;
-    }
+    .btn-preset { flex: 1; font-size: 12px; padding: 8px; background: var(--primary-light); color: var(--primary); border: 1px solid #b6d4fe; border-radius: 6px; cursor: pointer; font-weight: 600; }
     .btn-preset:hover { background: #d3e5f5; }
-
-    /* Hoja de Vista Previa */
     .preview-wrapper { display: flex; justify-content: center; overflow-x: auto; }
-    .sheet {
-      width: 215.9mm; min-height: 279.4mm; background: #fff;
-      padding: 18mm 20mm; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      display: flex; flex-direction: column; justify-content: space-between;
-      color: #111827;
-    }
-
-    /* Encabezado */
-    .doc-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      border-bottom: 2px solid var(--primary); padding-bottom: 14px; margin-bottom: 18px;
-    }
+    .sheet { width: 215.9mm; min-height: 279.4mm; background: #fff; padding: 18mm 20mm; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; justify-content: space-between; color: #111827; }
+    .doc-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--primary); padding-bottom: 14px; margin-bottom: 18px; }
     .brand-block { max-width: 65%; }
-    .logo-badge {
-      width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--primary); font-weight: 800; font-size: 12px;
-      margin-bottom: 8px; background: var(--primary-light);
-      overflow: hidden;
+    
+    /* Ajuste para que tu logo se vea bien en la nota */
+    .logo-badge { 
+      width: 60px; 
+      height: 60px; 
+      margin-bottom: 8px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: flex-start;
     }
-    .logo-badge img { width: 100%; height: 100%; object-fit: cover; }
+    .logo-badge img { 
+      max-width: 100%; 
+      max-height: 100%; 
+      object-fit: contain; 
+    }
     
     .brand-title { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.3px; }
     .brand-subtitle { font-size: 12.5px; color: #374151; margin-top: 2px; font-weight: 500; }
     .brand-meta { font-size: 11px; color: #4b5563; margin-top: 4px; line-height: 1.45; }
-    
     .doc-number-block { text-align: right; }
-    .doc-type {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      color: var(--primary); letter-spacing: 0.6px;
-    }
+    .doc-type { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.6px; }
     .doc-num { font-size: 22px; font-weight: 800; color: var(--primary); margin: 2px 0 6px; }
     .doc-date { font-size: 11.5px; color: #4b5563; font-weight: 600; }
-
-    /* Cliente y Moneda */
-    .client-bar {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 20px;
-    }
-    .client-label, .payment-mode-label {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      color: var(--primary); letter-spacing: 0.5px; margin-bottom: 3px;
-    }
+    .client-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .client-label, .payment-mode-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.5px; margin-bottom: 3px; }
     .client-name { font-size: 14px; font-weight: 700; color: #111827; }
     .client-id { font-size: 12px; color: #374151; margin-top: 2px; }
     .payment-mode-box { text-align: right; }
     .payment-mode-value { font-size: 14px; font-weight: 700; color: var(--primary); }
-
-    /* Tabla */
     .items-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
-    .items-table th {
-      text-align: left; font-size: 10.5px; text-transform: uppercase;
-      color: var(--primary); border-bottom: 1.5px solid var(--primary);
-      padding: 8px 6px; letter-spacing: 0.4px;
-    }
+    .items-table th { text-align: left; font-size: 10.5px; text-transform: uppercase; color: var(--primary); border-bottom: 1.5px solid var(--primary); padding: 8px 6px; letter-spacing: 0.4px; }
     .items-table th.num, .items-table td.num { text-align: right; }
-    .items-table td {
-      padding: 10px 6px; font-size: 12.5px;
-      border-bottom: 1px solid #f3f4f6; color: #1f2937;
-    }
-
-    /* Totales */
+    .items-table td { padding: 10px 6px; font-size: 12.5px; border-bottom: 1px solid #f3f4f6; color: #1f2937; }
     .totals-row { display: flex; justify-content: flex-end; margin-bottom: 24px; }
-    .totals-box {
-      width: 280px; border-top: 2px solid var(--primary); padding-top: 10px;
-      display: flex; justify-content: space-between; align-items: baseline;
-    }
+    .totals-box { width: 280px; border-top: 2px solid var(--primary); padding-top: 10px; display: flex; justify-content: space-between; align-items: baseline; }
     .totals-label { font-size: 14px; font-weight: 700; }
     .totals-amount { font-size: 18px; font-weight: 800; color: var(--primary); }
-
-    /* Datos Bancarios */
-    .payment-details-card {
-      background: #f8fafc; border-left: 4px solid var(--primary);
-      padding: 15px 20px; margin-bottom: 20px; border-radius: 0 4px 4px 0;
-    }
-    .payment-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 20px; font-size: 11.5px; line-height: 1.6;
-    }
-    .payment-col h4 {
-      font-size: 11px; font-weight: 700; color: var(--primary);
-      margin-bottom: 4px; text-transform: uppercase;
-    }
+    .payment-details-card { background: #f8fafc; border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 20px; border-radius: 0 4px 4px 0; }
+    .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11.5px; line-height: 1.6; }
+    .payment-col h4 { font-size: 11px; font-weight: 700; color: var(--primary); margin-bottom: 4px; text-transform: uppercase; }
     .payment-col p { color: #374151; }
-
-    /* Pie de página */
-    .doc-footer {
-      border-top: 1px solid #e5e7eb; padding-top: 10px;
-      display: flex; justify-content: space-between;
-      font-size: 10.5px; color: #6b7280;
-    }
-
-    /* Impresión */
-    @media print {
-      body { background: #fff; padding: 0; }
-      .editor-panel { display: none !important; }
-      .app-container { display: block; max-width: 100%; }
-      .sheet { box-shadow: none; width: 100%; min-height: auto; padding: 12mm 15mm; }
-    }
+    .doc-footer { border-top: 1px solid #e5e7eb; padding-top: 10px; display: flex; justify-content: space-between; font-size: 10.5px; color: #6b7280; }
+    @media print { body { background: #fff; padding: 0; } .editor-panel { display: none !important; } .app-container { display: block; max-width: 100%; } .sheet { box-shadow: none; width: 100%; min-height: auto; padding: 12mm 15mm; } }
   </style>
 </head>
 <body>
 
 <div class="app-container">
-  <!-- PANEL DE EDICIÓN -->
   <aside class="editor-panel">
     <h2>Editor de Nota de Entrega</h2>
 
@@ -300,16 +172,14 @@
     <button type="button" class="btn btn-primary" onclick="window.print()">📄 Imprimir / Guardar PDF</button>
   </aside>
 
-  <!-- VISTA PREVIA DEL DOCUMENTO -->
   <main class="preview-wrapper">
     <div class="sheet" id="printableSheet">
       <div>
-        <!-- Encabezado -->
         <header class="doc-header">
           <div class="brand-block">
-            <!-- Aquí está el logo de la app -->
+            <!-- AQUÍ SE MUESTRA TU LOGO LOCAL -->
             <div class="logo-badge">
-              <img src="https://cdn-icons-png.flaticon.com/512/2830/2830284.png" alt="Logo" style="filter: invert(22%) sepia(36%) saturate(1911%) hue-rotate(181deg) brightness(92%) contrast(94%);">
+              <img src="logo.png" alt="Logo Repuestos MERIDA">
             </div>
             <div class="brand-title">Repuestos MERIDA</div>
             <div class="brand-subtitle">Repuestos de refrigeración y aire acondicionado · Servicio de Diagnóstico y Reparación</div>
@@ -326,7 +196,6 @@
           </div>
         </header>
 
-        <!-- Cliente y Moneda -->
         <section class="client-bar">
           <div>
             <div class="client-label">CLIENTE</div>
@@ -339,7 +208,6 @@
           </div>
         </section>
 
-        <!-- Tabla -->
         <table class="items-table">
           <thead>
             <tr>
@@ -352,7 +220,6 @@
           <tbody id="outItemsBody"></tbody>
         </table>
 
-        <!-- Total -->
         <div class="totals-row">
           <div class="totals-box">
             <span class="totals-label">Total</span>
@@ -360,7 +227,6 @@
           </div>
         </div>
 
-        <!-- Datos de Pago -->
         <section class="payment-details-card">
           <div class="payment-grid">
             <div class="payment-col">
@@ -380,7 +246,6 @@
         </section>
       </div>
 
-      <!-- Pie -->
       <footer class="doc-footer">
         <span>Documento de entrega. No constituye factura fiscal.</span>
         <span>Nota N° <strong id="outFooterDocNum">00-0007</strong></span>
@@ -390,7 +255,6 @@
 </div>
 
 <script>
-  // Lógica de la App (Idéntica a la anterior)
   let items = [{ desc: "Relacion mano de obra Adecuaciones Cava Almacen", qty: 1, price: 850 }];
 
   function formatNumber(num) {
@@ -517,10 +381,8 @@
     render();
   }
 
-  // Iniciar
   render();
 
-  // Registrar Service Worker (Requerido para PWA)
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').then(() => {
       console.log('Service Worker Registrado');
