@@ -5,49 +5,108 @@
 <title>Nota de Entrega - Repuestos MERIDA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-  body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background:#f4f4f4; }
-  h1 { color: #1a4d8f; }
-  fieldset { margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; background:#fff; }
-  legend { font-weight: bold; }
-  label { display: block; margin-top: 8px; font-size: 14px; }
-  input { width: 100%; padding: 6px; box-sizing: border-box; }
-  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  th, td { border: 1px solid #999; padding: 6px; text-align: left; }
-  .money { text-align: right; }
-  button { padding: 8px 14px; margin: 5px 5px 5px 0; cursor: pointer; font-size: 14px; border:none; border-radius:4px; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  body { 
+    font-family: 'Inter', Arial, sans-serif; 
+    max-width: 850px; 
+    margin: 20px auto; 
+    padding: 20px; 
+    background: #e9ecef; 
+    color: #333;
+  }
+
+  /* ====== ESTILOS DEL FORMULARIO (NO SALE EN PDF) ====== */
+  .no-print { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+  .no-print h1 { font-size: 20px; color: #1a4d8f; margin-top: 0; }
+  fieldset { margin-bottom: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 6px; }
+  legend { font-weight: 600; color: #1a4d8f; padding: 0 5px; }
+  label { display: block; margin-top: 10px; font-size: 13px; font-weight: 500; color: #555;}
+  input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
+  
+  button { padding: 10px 18px; margin: 5px 5px 5px 0; cursor: pointer; font-size: 14px; border:none; border-radius:4px; font-weight: 600; }
   .btn-pdf { background:#1a4d8f; color:#fff; }
   .btn-print { background:#555; color:#fff; }
   .btn-add { background:#27ae60; color:#fff; }
-  .btn-del { background:#c0392b; color:#fff; padding:4px 10px; font-size:13px; }
+  .btn-del { background:#e74c3c; color:#fff; padding:6px 10px; font-size:12px; }
+  
+  #tablaItems input { padding: 6px; }
+  #tablaItems td { padding: 4px; border-bottom: 1px solid #eee; }
+  #tablaItems th { font-size: 12px; color: #666; text-align: left; border-bottom: 2px solid #ddd; padding-bottom: 8px;}
 
-  /* Tabla editable del formulario */
-  #tablaItems input { padding:4px; }
-  #tablaItems td { vertical-align: middle; }
-
-  /* Hoja de la nota */
+  /* ====== DISEÑO DE LA NOTA (SALE EN PDF) ====== */
   #nota {
     background: #fff;
-    padding: 30px 35px;
-    margin-top: 25px;
-    color: #111;
+    padding: 40px;
+    color: #333;
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.5;
+    border-radius: 4px;
   }
-  #nota h2 { margin:0 0 4px 0; color:#1a4d8f; }
-  #nota .subtitulo { font-size:12px; color:#444; margin-bottom:8px; }
-  #nota .empresa { font-size:12px; border-bottom:1px solid #ccc; padding-bottom:8px; margin-bottom:15px; }
-  #nota h3 { font-size:13px; margin:14px 0 4px 0; border-bottom:1px solid #ddd; padding-bottom:2px; }
-  #nota table { font-size:12px; }
-  #nota th { background:#eef2f8; }
-  #nota .footer { margin-top:20px; font-size:11px; color:#666; font-style:italic; }
-  #nota .rotulo { font-weight:bold; color:#1a4d8f; }
+
+  /* Header */
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .empresa-info { width: 60%; }
+  .logo-box { display: flex; align-items: center; margin-bottom: 10px; }
+  .logo-circle { 
+    width: 45px; height: 45px; border: 2px solid #1a4d8f; border-radius: 50%; 
+    display: flex; flex-direction: column; justify-content: center; align-items: center; 
+    font-size: 9px; font-weight: 700; color: #1a4d8f; line-height: 1; margin-right: 12px;
+  }
+  .logo-circle span { font-size: 8px; font-weight: 400; color: #555; }
+  .empresa-nombre { font-size: 18px; font-weight: 700; color: #222; margin: 0; }
+  .empresa-sub { font-size: 11px; color: #555; margin: 2px 0 10px 0; }
+  .empresa-datos { font-size: 11px; color: #666; margin: 0; line-height: 1.4; }
+  
+  .nota-info { text-align: right; width: 35%; }
+  .nota-titulo { font-size: 11px; color: #666; font-weight: 600; letter-spacing: 0.5px; }
+  .nota-numero { font-size: 26px; font-weight: 700; color: #1a4d8f; margin: 2px 0 5px 0; }
+  .nota-fecha { font-size: 11px; color: #555; }
+  
+  .linea-divisoria { height: 2px; background: #1a4d8f; margin: 20px 0; }
+
+  /* Cliente y Pago */
+  .grid-cliente { display: flex; justify-content: space-between; margin-bottom: 25px; }
+  .cliente-datos { width: 60%; }
+  .pago-datos { width: 35%; text-align: right; }
+  .rotulo-seccion { font-size: 10px; font-weight: 700; color: #1a4d8f; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+  .cliente-nombre { font-size: 14px; font-weight: 700; color: #222; margin: 0 0 3px 0; }
+  .cliente-cedula { font-size: 12px; color: #666; }
+  .pago-tipo { font-size: 13px; font-weight: 700; color: #1a4d8f; margin: 0; }
+
+  /* Tabla */
+  .tabla-items { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+  .tabla-items th { 
+    text-align: left; font-size: 10px; font-weight: 700; color: #1a4d8f; 
+    text-transform: uppercase; padding: 10px 5px; border-bottom: 2px solid #1a4d8f;
+  }
+  .tabla-items td { padding: 12px 5px; border-bottom: 1px solid #eee; font-size: 12px; color: #333; vertical-align: top; }
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+
+  /* Total */
+  .total-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .total-box { width: 250px; border-top: 2px solid #1a4d8f; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .total-label { font-size: 14px; font-weight: 700; color: #222; }
+  .total-monto { font-size: 15px; font-weight: 700; color: #1a4d8f; }
+
+  /* Bloque de Pago (Caja gris) */
+  .pago-box { background: #f8f9fa; border-left: 4px solid #1a4d8f; padding: 20px; margin-top: 30px; border-radius: 0 4px 4px 0; }
+  .pago-seccion { margin-bottom: 15px; }
+  .pago-seccion:last-child { margin-bottom: 0; }
+  .pago-titulo { font-size: 10px; font-weight: 700; color: #1a4d8f; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .pago-linea { font-size: 12px; color: #333; margin: 3px 0; }
+  .pago-linea b { color: #222; }
+
+  /* Footer */
+  .footer { margin-top: 30px; font-size: 10px; color: #888; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
 </style>
 </head>
 <body>
 
-<h1 class="no-print">Nota de Entrega – Repuestos MERIDA</h1>
-
 <div class="no-print">
+  <h1>Configuración de la Nota</h1>
+  
   <fieldset>
     <legend>Datos del Cliente</legend>
     <label>RAZÓN SOCIAL / NOMBRE: <input id="clienteNombre" value="JOSE RAMON HERNANDEZ GONZALEZ"></label>
@@ -57,14 +116,9 @@
 
   <fieldset>
     <legend>Productos / Servicios</legend>
-    <table id="tablaItems">
+    <table id="tablaItems" style="width:100%; border-collapse:collapse; margin-bottom:10px;">
       <thead>
-        <tr>
-          <th>DESCRIPCIÓN</th>
-          <th style="width:90px;">CANTIDAD</th>
-          <th style="width:130px;">PRECIO UNITARIO</th>
-          <th style="width:60px;">—</th>
-        </tr>
+        <tr><th>DESCRIPCIÓN</th><th style="width:80px;">CANT.</th><th style="width:120px;">PRECIO</th><th style="width:40px;"></th></tr>
       </thead>
       <tbody id="itemsBody"></tbody>
     </table>
@@ -85,66 +139,109 @@
     <label>Número de cuenta: <input id="bancoNumero" value="01080137180100065512"></label>
   </fieldset>
 
-  <div style="text-align:center; margin-top:10px;">
+  <div style="text-align:center; margin-top:15px;">
     <button class="btn-pdf" onclick="generarPDF()">📄 Generar PDF</button>
     <button class="btn-print" onclick="window.print()">🖨 Imprimir</button>
   </div>
 </div>
 
+<!-- ====== DISEÑO DE LA NOTA ====== -->
 <div id="nota">
-  <h2>Repuestos MERIDA</h2>
-  <div class="subtitulo">Repuestos de refrigeración y aire acondicionado • Servicio de Diagnóstico y Reparación</div>
-  <div class="empresa">
-    RIF: J-508305876<br>
-    Calle Don Bosco Casa N/A Nro S/N Sector Creolandia, Judibana, Falcón, Venezuela<br>
-    Teléfono: 04246926108 / 04126666397<br>
-    <span id="fechaNota"></span>
+  
+  <div class="header-top">
+    <div class="empresa-info">
+      <div class="logo-box">
+        <div class="logo-circle">REPUESTOS<br><span>MERIDA</span></div>
+        <div>
+          <h2 class="empresa-nombre">Repuestos MERIDA</h2>
+        </div>
+      </div>
+      <p class="empresa-sub">Repuestos de refrigeración y aire acondicionado - Servicio de Diagnóstico y Reparación</p>
+      <p class="empresa-datos">
+        RIF: J-508305876<br>
+        CALLE DON BOSCO CASA N/A NRO S/N SECTOR CREOLANDIA,<br>
+        JUDIBANA, FALCON, VENEZUELA<br>
+        Teléfono: 04246926108 / 04126666397
+      </p>
+    </div>
+    <div class="nota-info">
+      <div class="nota-titulo">NOTA DE ENTREGA N°</div>
+      <div class="nota-numero" id="numeroNota">00-0007</div>
+      <div class="nota-fecha" id="fechaNota"></div>
+    </div>
   </div>
 
-  <h3>CLIENTE</h3>
-  <div id="outCliente"></div>
+  <div class="linea-divisoria"></div>
 
-  <h3>MODALIDAD DE PAGO</h3>
-  <div id="outModalidad"></div>
+  <div class="grid-cliente">
+    <div class="cliente-datos">
+      <div class="rotulo-seccion">CLIENTE</div>
+      <div class="cliente-nombre" id="outClienteNombre">JOSE RAMON HERNANDEZ GONZALEZ</div>
+      <div class="cliente-cedula" id="outClienteCedula">Cédula: V-13115067</div>
+    </div>
+    <div class="pago-datos">
+      <div class="rotulo-seccion">MODALIDAD DE PAGO</div>
+      <div class="pago-tipo" id="outModalidad">PAGO EN USDT (BINANCE)</div>
+    </div>
+  </div>
 
-  <table>
+  <table class="tabla-items">
     <thead>
-      <tr><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>PRECIO UNITARIO</th><th>TOTAL</th></tr>
+      <tr>
+        <th>DESCRIPCIÓN</th>
+        <th class="text-center" style="width: 80px;">CANTIDAD</th>
+        <th class="text-right" style="width: 120px;">PRECIO UNITARIO</th>
+        <th class="text-right" style="width: 100px;">TOTAL</th>
+      </tr>
     </thead>
     <tbody id="outItems"></tbody>
   </table>
 
-  <h3>DATOS PARA PAGO EN USDT (BINANCE PAY)</h3>
-  <div id="outBinance"></div>
+  <div class="total-row">
+    <div class="total-box">
+      <span class="total-label">Total</span>
+      <span class="total-monto" id="outTotal">850,00 USDT</span>
+    </div>
+  </div>
 
-  <h3>DATOS PARA TRANSFERENCIA BANCARIA (BANCO PROVINCIAL)</h3>
-  <div id="outBanco"></div>
+  <div class="pago-box">
+    <div class="pago-seccion">
+      <div class="pago-titulo">DATOS PARA PAGO EN USDT (BINANCE PAY)</div>
+      <div class="pago-linea"><b>Binance ID:</b> <span id="outBinanceId"></span></div>
+      <div class="pago-linea"><b>Correo asociado:</b> <span id="outBinanceCorreo"></span></div>
+      <div class="pago-linea"><b>Monto a transferir:</b> <span id="outBinanceMonto"></span></div>
+    </div>
+    <div class="pago-seccion">
+      <div class="pago-titulo">DATOS PARA TRANSFERENCIA BANCARIA (BANCO PROVINCIAL)</div>
+      <div class="pago-linea"><b>Titular:</b> <span id="outBancoTitular"></span></div>
+      <div class="pago-linea"><b>Cédula / RIF:</b> <span id="outBancoCedula"></span></div>
+      <div class="pago-linea"><b>Tipo de Cuenta:</b> <span id="outBancoTipo"></span></div>
+      <div class="pago-linea"><b>Número de Cuenta:</b> <span id="outBancoNumero"></span></div>
+    </div>
+  </div>
 
   <div class="footer">Documento de entrega. No constituye factura fiscal.</div>
 </div>
 
 <script>
-/* ====== Estado de los ítems ====== */
+/* ====== Estado ====== */
 let items = [];
 
 function nuevoItem(desc = '', cant = 1, precio = 0) {
   return { id: Date.now() + Math.random(), desc, cant, precio };
 }
 
-/* ====== Render del formulario de ítems ====== */
+/* ====== Render Formulario ====== */
 function renderFormItems() {
   const body = document.getElementById('itemsBody');
   body.innerHTML = '';
-
   items.forEach((it, i) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><input data-i="${i}" data-f="desc" value="${it.desc.replace(/"/g,'&quot;')}"></td>
-      <td><input data-i="${i}" data-f="cant" type="number" min="0" step="0.01" value="${it.cant}"></td>
-      <td><input data-i="${i}" data-f="precio" type="number" min="0" step="0.01" value="${it.precio}"></td>
-      <td style="text-align:center;">
-        <button class="btn-del" onclick="eliminarItem(${i})">✕</button>
-      </td>
+      <td><input data-i="${i}" data-f="desc" value="${it.desc.replace(/"/g,'&quot;')}" style="width:100%;"></td>
+      <td><input data-i="${i}" data-f="cant" type="number" min="0" step="0.01" value="${it.cant}" style="width:100%;"></td>
+      <td><input data-i="${i}" data-f="precio" type="number" min="0" step="0.01" value="${it.precio}" style="width:100%;"></td>
+      <td class="text-center"><button class="btn-del" onclick="eliminarItem(${i})">✕</button></td>
     `;
     body.appendChild(tr);
   });
@@ -160,49 +257,28 @@ function renderFormItems() {
   });
 }
 
-function agregarItem() {
-  items.push(nuevoItem());
-  guardarItems();
-  renderFormItems();
-  renderNota();
-}
-
-function eliminarItem(i) {
-  items.splice(i, 1);
-  if (items.length === 0) items.push(nuevoItem());
-  guardarItems();
-  renderFormItems();
-  renderNota();
-}
+function agregarItem() { items.push(nuevoItem()); guardarItems(); renderFormItems(); renderNota(); }
+function eliminarItem(i) { items.splice(i, 1); if (items.length === 0) items.push(nuevoItem()); guardarItems(); renderFormItems(); renderNota(); }
 
 /* ====== Persistencia ====== */
-function guardarItems() {
-  localStorage.setItem('merida_items', JSON.stringify(items));
-}
-
+function guardarItems() { localStorage.setItem('merida_items', JSON.stringify(items)); }
 function cargarItems() {
   try {
     const raw = localStorage.getItem('merida_items');
     if (raw) {
       const arr = JSON.parse(raw);
-      if (Array.isArray(arr) && arr.length) {
-        items = arr.map(x => nuevoItem(x.desc, x.cant, x.precio));
-        return;
-      }
+      if (Array.isArray(arr) && arr.length) { items = arr.map(x => nuevoItem(x.desc, x.cant, x.precio)); return; }
     }
   } catch(e) {}
-  /* Valores por defecto (los de la nota original) */
   items = [ nuevoItem('Relacion mano de obra Adecuaciones Cava Almacen', 1, 850) ];
 }
 
-/* ====== Render de la nota (salida) ====== */
+/* ====== Render Nota (PDF) ====== */
 function renderNota() {
   const v = id => document.getElementById(id).value;
 
-  document.getElementById('outCliente').innerHTML =
-    `<span class="rotulo">RAZÓN SOCIAL / NOMBRE:</span> ${v('clienteNombre')}<br>
-     <span class="rotulo">RIF / CÉDULA:</span> ${v('clienteCedula')}`;
-
+  document.getElementById('outClienteNombre').textContent = v('clienteNombre');
+  document.getElementById('outClienteCedula').textContent = 'Cédula: ' + v('clienteCedula');
   document.getElementById('outModalidad').textContent = v('modalidad');
 
   let total = 0;
@@ -211,46 +287,40 @@ function renderNota() {
     total += sub;
     return `<tr>
       <td>${it.desc || ''}</td>
-      <td>${(+it.cant).toFixed(2)}</td>
-      <td class="money">${(+it.precio).toFixed(2)} USDT</td>
-      <td class="money">${sub.toFixed(2)} USDT</td>
+      <td class="text-center">${(+it.cant).toFixed(2).replace('.', ',')}</td>
+      <td class="text-right">${(+it.precio).toFixed(2).replace('.', ',')} USDT</td>
+      <td class="text-right">${sub.toFixed(2).replace('.', ',')} USDT</td>
     </tr>`;
   }).join('');
 
-  document.getElementById('outItems').innerHTML = filas + `
-    <tr>
-      <td colspan="3" style="text-align:right;"><b>Total</b></td>
-      <td class="money"><b>${total.toFixed(2)} USDT</b></td>
-    </tr>`;
+  document.getElementById('outItems').innerHTML = filas;
+  document.getElementById('outTotal').textContent = total.toFixed(2).replace('.', ',') + ' USDT';
 
-  document.getElementById('outBinance').innerHTML =
-    `Binance ID: ${v('binanceId')}<br>
-     Correo asociado: ${v('binanceCorreo')}<br>
-     Monto a transferir: <b>${total.toFixed(2)} USDT</b>`;
+  document.getElementById('outBinanceId').textContent = v('binanceId');
+  document.getElementById('outBinanceCorreo').textContent = v('binanceCorreo');
+  document.getElementById('outBinanceMonto').textContent = total.toFixed(2).replace('.', ',') + ' USDT';
 
-  document.getElementById('outBanco').innerHTML =
-    `Titular: ${v('bancoTitular')}<br>
-     Cédula / RIF: ${v('bancoCedula')}<br>
-     Tipo de Cuenta: ${v('bancoTipo')}<br>
-     Número de Cuenta: ${v('bancoNumero')}`;
+  document.getElementById('outBancoTitular').textContent = v('bancoTitular');
+  document.getElementById('outBancoCedula').textContent = v('bancoCedula');
+  document.getElementById('outBancoTipo').textContent = v('bancoTipo');
+  document.getElementById('outBancoNumero').textContent = v('bancoNumero');
 }
 
 /* ====== Fecha ====== */
 function setFecha() {
   const d = new Date();
-  document.getElementById('fechaNota').textContent =
-    d.toLocaleString('es-VE', { day:'2-digit', month:'short', year:'numeric',
-      hour:'2-digit', minute:'2-digit', hour12:true });
+  document.getElementById('fechaNota').textContent = d.toLocaleString('es-VE', { 
+    day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true 
+  });
 }
 
 /* ====== PDF ====== */
 function generarPDF() {
   const elemento = document.getElementById('nota');
-  const nombreArchivo = 'NotaEntrega_' +
-    document.getElementById('clienteNombre').value.replace(/\s+/g,'_') + '.pdf';
+  const nombreArchivo = 'NotaEntrega_' + document.getElementById('clienteNombre').value.replace(/\s+/g,'_') + '.pdf';
 
   html2pdf().set({
-    margin:      [10,10,10,10],
+    margin:      [0, 0, 0, 0], // Sin margen porque el CSS ya tiene padding
     filename:    nombreArchivo,
     image:       { type:'jpeg', quality:0.98 },
     html2canvas: { scale:2, useCORS:true },
@@ -259,9 +329,7 @@ function generarPDF() {
 }
 
 /* ====== Init ====== */
-const campos = ['clienteNombre','clienteCedula','modalidad',
-                'binanceId','binanceCorreo',
-                'bancoTitular','bancoCedula','bancoTipo','bancoNumero'];
+const campos = ['clienteNombre','clienteCedula','modalidad','binanceId','binanceCorreo','bancoTitular','bancoCedula','bancoTipo','bancoNumero'];
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarItems();
