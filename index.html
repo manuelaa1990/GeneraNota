@@ -14,12 +14,10 @@
   table { width: 100%; border-collapse: collapse; margin-top: 10px; }
   th, td { border: 1px solid #999; padding: 6px; text-align: left; }
   .money { text-align: right; }
-  .no-print { }
   button { padding: 10px 18px; margin: 5px; cursor: pointer; font-size: 15px; border:none; border-radius:4px; }
   .btn-pdf { background:#1a4d8f; color:#fff; }
   .btn-print { background:#555; color:#fff; }
 
-  /* Hoja de la nota */
   #nota {
     background: #fff;
     padding: 30px 35px;
@@ -35,18 +33,18 @@
   #nota table { font-size:12px; }
   #nota th { background:#eef2f8; }
   #nota .footer { margin-top:20px; font-size:11px; color:#666; font-style:italic; }
+  #nota .rotulo { font-weight:bold; color:#1a4d8f; }
 </style>
 </head>
 <body>
 
 <h1 class="no-print">Nota de Entrega – Repuestos MERIDA</h1>
 
-<!-- ===== FORMULARIO EDITABLE ===== -->
 <div class="no-print">
   <fieldset>
     <legend>Datos del Cliente</legend>
-    <label>Nombre: <input id="clienteNombre" value="JOSE RAMON HERNANDEZ GONZALEZ"></label>
-    <label>Cédula: <input id="clienteCedula" value="V-13115067"></label>
+    <label>RAZÓN SOCIAL / NOMBRE: <input id="clienteNombre" value="JOSE RAMON HERNANDEZ GONZALEZ"></label>
+    <label>RIF / CÉDULA: <input id="clienteCedula" value="V-13115067"></label>
     <label>Modalidad de pago: <input id="modalidad" value="PAGO EN USDT (BINANCE)"></label>
   </fieldset>
 
@@ -77,7 +75,6 @@
   </div>
 </div>
 
-<!-- ===== HOJA QUE SE IMPRIME / EXPORTA ===== -->
 <div id="nota">
   <h2>Repuestos MERIDA</h2>
   <div class="subtitulo">Repuestos de refrigeración y aire acondicionado • Servicio de Diagnóstico y Reparación</div>
@@ -111,12 +108,13 @@
 </div>
 
 <script>
-/* ====== Render de la nota ====== */
 function render() {
   const v = id => document.getElementById(id).value;
 
+  /* CLIENTE con rótulos solicitados */
   document.getElementById('outCliente').innerHTML =
-    `${v('clienteNombre')}<br>Cédula: ${v('clienteCedula')}`;
+    `<span class="rotulo">RAZÓN SOCIAL / NOMBRE:</span> ${v('clienteNombre')}<br>
+     <span class="rotulo">RIF / CÉDULA:</span> ${v('clienteCedula')}`;
 
   document.getElementById('outModalidad').textContent = v('modalidad');
 
@@ -148,7 +146,6 @@ function render() {
      Número de Cuenta: ${v('bancoNumero')}`;
 }
 
-/* ====== Fecha ====== */
 function setFecha() {
   const d = new Date();
   const fecha = d.toLocaleString('es-VE', {
@@ -158,7 +155,6 @@ function setFecha() {
   document.getElementById('fechaNota').textContent = fecha;
 }
 
-/* ====== Persistencia ====== */
 const campos = ['clienteNombre','clienteCedula','modalidad','desc','cant','precio',
                 'binanceId','binanceCorreo','bancoTitular','bancoCedula','bancoTipo','bancoNumero'];
 
@@ -170,16 +166,13 @@ function cargar() {
   });
 }
 
-/* ====== Generar PDF ====== */
 function generarPDF() {
   const elemento = document.getElementById('nota');
-
   const nombreArchivo = 'NotaEntrega_' +
-    document.getElementById('clienteNombre').value.replace(/\s+/g,'_') +
-    '.pdf';
+    document.getElementById('clienteNombre').value.replace(/\s+/g,'_') + '.pdf';
 
   const opt = {
-    margin:       [10, 10, 10, 10], // mm
+    margin:       [10, 10, 10, 10],
     filename:     nombreArchivo,
     image:        { type: 'jpeg', quality: 0.98 },
     html2canvas:  { scale: 2, useCORS: true },
@@ -189,7 +182,6 @@ function generarPDF() {
   html2pdf().set(opt).from(elemento).save();
 }
 
-/* ====== Init ====== */
 document.addEventListener('DOMContentLoaded', () => {
   cargar();
   setFecha();
