@@ -51,27 +51,24 @@
     .preview-wrapper { display: flex; justify-content: center; overflow-x: auto; }
     .sheet { width: 215.9mm; min-height: 279.4mm; background: #fff; padding: 18mm 20mm; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; justify-content: space-between; color: #111827; }
     
-    /* Encabezado (Título centrado, fecha a la derecha) */
+    /* Encabezado */
     .doc-header { display: flex; flex-direction: column; border-bottom: 2px solid var(--primary); padding-bottom: 14px; margin-bottom: 18px; position: relative; }
     
-    /* La fecha en la esquina superior derecha */
-    .doc-date-top { 
+    /* Caja de la derecha para fecha y número */
+    .doc-top-right { 
       position: absolute; 
       top: 0; 
       right: 0; 
-      font-size: 13px; 
-      color: #4b5563; 
-      font-weight: 600; 
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
     
-    /* El título centrado en el medio */
-    .header-center { 
-      text-align: center; 
-      width: 100%; 
-      margin-top: 5px; 
-      margin-bottom: 15px; 
-    }
+    .doc-date { font-size: 13px; color: #4b5563; font-weight: 600; }
+    .doc-num-right { font-size: 15px; font-weight: 800; color: #111827; }
     
+    .header-center { text-align: center; width: 100%; margin-top: 5px; margin-bottom: 15px; }
     .doc-type { font-size: 24px; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 1.5px; line-height: 1.1; }
     
     .header-bottom { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
@@ -141,8 +138,7 @@
         </select>
       </div>
       <div class="row-2">
-        <!-- Campo de número oculto -->
-        <div class="field" style="display: none;">
+        <div class="field">
           <label>N° Documento</label>
           <input type="text" id="inDocNum" value="00-0007" oninput="render()" />
         </div>
@@ -209,13 +205,17 @@
   <main class="preview-wrapper">
     <div class="sheet" id="printableSheet">
       <div>
-        <!-- ENCABEZADO CON FECHA A LA DERECHA Y TÍTULO CENTRADO -->
+        <!-- ENCABEZADO -->
         <header class="doc-header">
           
-          <!-- Fecha en la esquina superior derecha -->
-          <div class="doc-date-top" id="outDate">20NOV2026</div>
+          <!-- Fecha y Número arriba a la derecha -->
+          <div class="doc-top-right">
+            <div class="doc-date" id="outDate">20NOV2026</div>
+            <!-- Este es el número que se oculta en presupuestos -->
+            <div class="doc-num-right" id="outDocNumBlock">N° <span id="outDocNum">00-0007</span></div>
+          </div>
           
-          <!-- Título grande centrado -->
+          <!-- Título centrado -->
           <div class="header-center">
             <div class="doc-type" id="outDocType">NOTA DE ENTREGA</div>
           </div>
@@ -290,6 +290,7 @@
       <!-- PIE DE PÁGINA -->
       <footer class="doc-footer">
         <span>Documento de entrega. No constituye factura fiscal.</span>
+        <span id="outFooterInfo"><span id="outFooterDocType">Nota</span> N° <strong id="outFooterDocNum">00-0007</strong></span>
       </footer>
     </div>
   </main>
@@ -348,6 +349,7 @@
 
   function renderPreviewOnly() {
     const docType = document.getElementById("inDocType").value;
+    const docNum = document.getElementById("inDocNum").value;
     const currency = document.getElementById("inCurrency").value.trim() || "USDT";
     const dateStr = document.getElementById("inDate").value;
     const clientName = document.getElementById("inClientName").value;
@@ -357,6 +359,19 @@
 
     let bankId = document.getElementById("inBankId").value.trim();
     if (/^\d+$/.test(bankId)) bankId = bankId.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    // Lógica para mostrar u ocultar el número
+    if (docType === "PRESUPUESTO") {
+      document.getElementById("outDocNumBlock").style.display = "none";
+      document.getElementById("outFooterInfo").style.display = "none";
+    } else {
+      document.getElementById("outDocNumBlock").style.display = "block";
+      document.getElementById("outDocNum").textContent = docNum;
+      
+      document.getElementById("outFooterInfo").style.display = "block";
+      document.getElementById("outFooterDocNum").textContent = docNum;
+      document.getElementById("outFooterDocType").textContent = "Nota";
+    }
 
     // Actualizar textos
     document.getElementById("outDocType").textContent = docType;
@@ -408,6 +423,7 @@
 
   function cargarPlantillaJose() {
     document.getElementById("inDocType").value = "NOTA DE ENTREGA";
+    document.getElementById("inDocNum").value = "00-0007";
     document.getElementById("inClientName").value = "JOSE RAMON HERNANDEZ GONZALEZ";
     document.getElementById("inClientId").value = "13.115.067";
     document.getElementById("inDate").value = "20NOV2026";
@@ -417,6 +433,7 @@
 
   function cargarPlantillaWeef() {
     document.getElementById("inDocType").value = "PRESUPUESTO";
+    document.getElementById("inDocNum").value = "00-0008";
     document.getElementById("inClientName").value = "WEEF SA";
     document.getElementById("inClientId").value = "J-40719117-9";
     document.getElementById("inDate").value = "20NOV2026";
