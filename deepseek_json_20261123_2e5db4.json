@@ -1,0 +1,18 @@
+{
+  "name": "Repuestos MERIDA - Notas",
+  "short_name": "MERIDA",
+  "description": "Generador de Notas de Entrega para Repuestos MERIDA",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f4c81",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2830/2830284.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
